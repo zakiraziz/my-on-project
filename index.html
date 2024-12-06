@@ -12,16 +12,16 @@
       <h1>Real-Time Weather Dashboard</h1>
     </header>
     <main>
-      <div class="search-bar">
-        <input type="text" id="cityInput" placeholder="Enter city name" />
-        <button id="searchButton">Search</button>
-      </div>
-      <div id="weatherDisplay" class="weather-display">
-        <!-- Weather info will be displayed here -->
-      </div>
+      <section class="search-bar">
+        <input type="text" id="cityInput" placeholder="Enter city name" aria-label="City name">
+        <button id="searchButton" aria-label="Search weather for the entered city">Search</button>
+      </section>
+      <div class="loading" id="loadingSpinner" style="display: none;"></div>
+      <section id="weatherDisplay" class="weather-display">
+        <p>Enter a city name to get the current weather.</p>
+      </section>
     </main>
   </div>
   <script src="app.js"></script>
-  <python src="app.py"></python>
 </body>
 </html>
