@@ -10,7 +10,7 @@ async function fetchWeatherByCity() {
   const city = document.getElementById("cityInput").value.trim();
 
   if (!city) {
-    alert("Please enter a city name!");
+    alert("Please enter a city name!"); 
     return;
   }
 
