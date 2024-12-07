@@ -1,27 +1,45 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real-Time Weather Dashboard</title>
+  <title>Advanced Weather Dashboard</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>Real-Time Weather Dashboard</h1>
+      <h1>Advanced Weather Dashboard</h1>
+      <button id="toggleTheme">🌙 Night Mode</button>
     </header>
     <main>
       <section class="search-bar">
         <input type="text" id="cityInput" placeholder="Enter city name" aria-label="City name">
         <button id="searchButton" aria-label="Search weather for the entered city">Search</button>
+        <button id="useCurrentLocation" aria-label="Use current location">📍 Use Location</button>
+        <button id="voiceSearch" aria-label="Voice search">🎤 Voice Search</button>
+        <button id="saveCity" aria-label="Save city to favorites">⭐ Save City</button>
       </section>
       <div class="loading" id="loadingSpinner" style="display: none;"></div>
       <section id="weatherDisplay" class="weather-display">
-        <p>Enter a city name to get the current weather.</p>
+        <p>Enter a city name or use the location button to get the current weather.</p>
+      </section>
+      <section id="airQuality" class="air-quality">
+        <h2>Air Quality</h2>
+        <p>Air quality data will appear here.</p>
+      </section>
+      <section id="forecast" class="forecast">
+        <h2>5-Day Forecast</h2>
+        <div id="forecastCards"></div>
+      </section>
+      <section id="favorites" class="favorites">
+        <h2>Favorite Cities</h2>
+        <ul id="favoriteCities"></ul>
       </section>
     </main>
   </div>
   <script src="app.js"></script>
+  <link rel="app" href="app.py">
 </body>
 </html>
