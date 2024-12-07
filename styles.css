@@ -4,7 +4,7 @@ body {
   margin: 0;
   padding: 0;
   background: linear-gradient(to bottom, #87CEEB, #ffffff);
-  color: #333; 
+  color: #333;
   line-height: 1.6;
 }
 
@@ -40,18 +40,23 @@ input {
 }
 
 button {
-  padding: 10px 20px;
+  padding: 10px 15px;
   background-color: #007BFF;
   color: white;
   border: none;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 14px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 button:hover {
   background-color: #0056b3;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 /* Weather Display */
@@ -74,6 +79,12 @@ button:hover {
   font-size: 1rem;
 }
 
+.weather-display img {
+  width: 100px;
+  height: auto;
+  margin: 10px auto;
+}
+
 /* Loading Spinner */
 .loading {
   display: none;
@@ -86,6 +97,7 @@ button:hover {
   animation: spin 1s linear infinite;
 }
 
+/* Animations */
 @keyframes spin {
   0% {
     transform: rotate(0deg);
@@ -106,13 +118,18 @@ button:hover {
   }
 }
 
+.fade-in {
+  animation: fadeIn 1s ease-in-out;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   input {
-    width: 60%;
+    width: 100%;
   }
 
   button {
+    flex: 1;
     font-size: 14px;
   }
 
