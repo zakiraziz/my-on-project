@@ -1,45 +1,50 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Advanced Weather Dashboard</title>
+  <title>Car Racing Game</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Advanced Weather Dashboard</h1>
-      <button id="toggleTheme">🌙 Night Mode</button>
-    </header>
-    <main>
-      <section class="search-bar">
-        <input type="text" id="cityInput" placeholder="Enter city name" aria-label="City name">
-        <button id="searchButton" aria-label="Search weather for the entered city">Search</button>
-        <button id="useCurrentLocation" aria-label="Use current location">📍 Use Location</button>
-        <button id="voiceSearch" aria-label="Voice search">🎤 Voice Search</button>
-        <button id="saveCity" aria-label="Save city to favorites">⭐ Save City</button>
-      </section>
-      <div class="loading" id="loadingSpinner" style="display: none;"></div>
-      <section id="weatherDisplay" class="weather-display">
-        <p>Enter a city name or use the location button to get the current weather.</p>
-      </section>
-      <section id="airQuality" class="air-quality">
-        <h2>Air Quality</h2>
-        <p>Air quality data will appear here.</p>
-      </section>
-      <section id="forecast" class="forecast">
-        <h2>5-Day Forecast</h2>
-        <div id="forecastCards"></div>
-      </section>
-      <section id="favorites" class="favorites">
-        <h2>Favorite Cities</h2>
-        <ul id="favoriteCities"></ul>
-      </section>
-    </main>
+  <!-- Game Container -->
+  <div id="gameContainer">
+    <!-- Background image for the game container -->
+    <div id="background"></div>
+
+    <!-- Game Canvas -->
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+
+    <!-- Score and Lives Display -->
+    <div id="score">Score: 0</div>
+    <div id="lives">Lives: 3</div>
+
+    <!-- Instructions Display -->
+    <div id="instructions">
+      <p>Use the arrow keys to move your car and avoid obstacles!</p>
+    </div>
+
+    <!-- Game Over Screen (hidden by default) -->
+    <div id="gameOver" style="display: none;">
+      <div id="gameOverText">Game Over!</div>
+      <div>Final Score: <span id="finalScore">0</span></div>
+      <button id="restartBtn">Restart</button>
+      <p id="gameOverMessage">Better luck next time!</p>
+    </div>
   </div>
+
+  <!-- Sound Settings -->
+  <div id="soundSettings">
+    <label for="soundToggle">Sound:</label>
+    <input type="checkbox" id="soundToggle" checked>
+  </div>
+
+  <!-- Pause Button -->
+  <div id="pauseButton">
+    <button onclick="togglePause()">Pause</button>
+  </div>
+
   <script src="app.js"></script>
-  <link rel="app" href="app.py">
+  <link rel="py" href="app.py">
 </body>
 </html>
