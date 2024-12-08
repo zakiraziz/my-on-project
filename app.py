@@ -1,100 +1,144 @@
-from flask import Flask, render_template, request, jsonify
-import requests
-import os
+import pygame
+import random
+import sys
 
-app = Flask(__name__)
+# Initialize Pygame
+pygame.init()
 
-# Use environment variables for security (or replace with your API key)
-API_KEY = os.getenv("OPENWEATHER_API_KEY", "your_openweathermap_api_key")
+# Screen dimensions and settings
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 600
+FPS = 60
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+# Colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+RED = (255, 0, 0)
+YELLOW = (255, 255, 0)
+GRAY = (50, 50, 50)
+GREEN = (0, 255, 0)
 
-@app.route("/weather", methods=["GET"])
-def get_weather():
-    city = request.args.get("city")
-    lat = request.args.get("lat")
-    lon = request.args.get("lon")
-    
-    if not city and not (lat and lon):
-        return jsonify({"error": "City name or coordinates are required"}), 400
+# Set up the screen
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Car Racing Game")
 
-    # Determine endpoint based on input
-    url = f"http://api.openweathermap.org/data/2.5/weather"
-    params = {"appid": API_KEY, "units": "metric"}
-    if city:
-        params["q"] = city
-    elif lat and lon:
-        params["lat"] = lat
-        params["lon"] = lon
+# Load assets
+player_car = pygame.image.load("player_car.png")
+player_car = pygame.transform.scale(player_car, (50, 100))
 
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        response.raise_for_status()
-        return jsonify(response.json())
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": f"Error fetching weather data: {e}"}), 503
+enemy_car = pygame.image.load("enemy_car.png")
+enemy_car = pygame.transform.scale(enemy_car, (50, 100))
 
-@app.route("/air_quality", methods=["GET"])
-def get_air_quality():
-    lat = request.args.get("lat")
-    lon = request.args.get("lon")
+road_image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+road_image.fill(GRAY)
 
-    if not (lat and lon):
-        return jsonify({"error": "Coordinates are required for air quality data"}), 400
+# Font for score and lives
+font = pygame.font.Font(None, 36)
 
-    url = f"http://api.openweathermap.org/data/2.5/air_pollution"
-    params = {"lat": lat, "lon": lon, "appid": API_KEY}
+# Game variables
+player_x = SCREEN_WIDTH // 2 - 25
+player_y = SCREEN_HEIGHT - 120
+player_speed = 6
 
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        response.raise_for_status()
-        return jsonify(response.json())
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": f"Error fetching air quality data: {e}"}), 503
+enemy_cars = [{"x": random.randint(50, SCREEN_WIDTH - 100), "y": random.randint(-300, -100), "speed": random.randint(3, 6)} for _ in range(3)]
+score = 0
+lives = 3
 
-@app.route("/forecast", methods=["GET"])
-def get_forecast():
-    city = request.args.get("city")
-    
-    if not city:
-        return jsonify({"error": "City name is required for the forecast"}), 400
+road_y = 0
 
-    url = f"http://api.openweathermap.org/data/2.5/forecast"
-    params = {"q": city, "appid": API_KEY, "units": "metric"}
+# Functions
+def draw_text(text, x, y, color=WHITE):
+    """Render and display text on the screen."""
+    text_surface = font.render(text, True, color)
+    screen.blit(text_surface, (x, y))
 
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        response.raise_for_status()
-        return jsonify(response.json())
-    except requests.exceptions.RequestException as e:
-        return jsonify({"error": f"Error fetching forecast data: {e}"}), 503
+def move_road():
+    """Animate the scrolling road."""
+    global road_y
+    road_y += 4
+    if road_y >= SCREEN_HEIGHT:
+        road_y = 0
+    screen.blit(road_image, (0, road_y - SCREEN_HEIGHT))
+    screen.blit(road_image, (0, road_y))
 
-if __name__ == "__main__":
-    app.run(debug=True)
-import requests
-from flask import jsonify, request
+def game_over():
+    """Display a game-over screen."""
+    screen.fill(BLACK)
+    draw_text("GAME OVER!", SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 - 40, RED)
+    draw_text(f"Score: {score}", SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2, WHITE)
+    draw_text("Press R to Restart", SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 40, YELLOW)
+    pygame.display.flip()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_r:
+                restart_game()
+                return
 
-API_KEY = "your_openweathermap_api_key"
+def restart_game():
+    """Restart the game."""
+    global player_x, player_y, enemy_cars, score, lives
+    player_x = SCREEN_WIDTH // 2 - 25
+    player_y = SCREEN_HEIGHT - 120
+    enemy_cars[:] = [{"x": random.randint(50, SCREEN_WIDTH - 100), "y": random.randint(-300, -100), "speed": random.randint(3, 6)} for _ in range(3)]
+    score = 0
+    lives = 3
 
-@app.route("/weather", methods=["GET"])
-def get_weather():
-    city = request.args.get("city")
-    if not city:
-        return jsonify({"error": "City name is required"}), 400
-    
-    url = f"http://api.openweathermap.org/data/2.5/weather"
-    params = {"q": city, "appid": API_KEY, "units": "metric"}
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        return jsonify(response.json())
-    else:
-        return jsonify({"error": response.json().get("message", "Unable to fetch weather data")}), response.status_code
-from flask import Flask, render_template
+# Main game loop
+running = True
+clock = pygame.time.Clock()
 
-app = Flask(__name__)
+while running:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
 
-@app.route("/")
-def index():
-    return render_template("index.html")  # Ensure `index.html` is in a "templates" folder
+    # Move player car
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT] and player_x > 50:
+        player_x -= player_speed
+    if keys[pygame.K_RIGHT] and player_x < SCREEN_WIDTH - 100:
+        player_x += player_speed
+
+    # Move road
+    move_road()
+
+    # Move enemy cars
+    for enemy in enemy_cars:
+        enemy["y"] += enemy["speed"]
+        if enemy["y"] > SCREEN_HEIGHT:
+            enemy["y"] = random.randint(-300, -100)
+            enemy["x"] = random.randint(50, SCREEN_WIDTH - 100)
+            enemy["speed"] = random.randint(3, 6)
+            score += 1
+
+    # Check for collisions
+    player_rect = pygame.Rect(player_x, player_y, 50, 100)
+    for enemy in enemy_cars:
+        enemy_rect = pygame.Rect(enemy["x"], enemy["y"], 50, 100)
+        if player_rect.colliderect(enemy_rect):
+            lives -= 1
+            enemy["y"] = random.randint(-300, -100)
+            enemy["x"] = random.randint(50, SCREEN_WIDTH - 100)
+            if lives == 0:
+                game_over()
+
+    # Draw player car
+    screen.blit(player_car, (player_x, player_y))
+
+    # Draw enemy cars
+    for enemy in enemy_cars:
+        screen.blit(enemy_car, (enemy["x"], enemy["y"]))
+
+    # Display score and lives
+    draw_text(f"Score: {score}", 10, 10)
+    draw_text(f"Lives: {lives}", SCREEN_WIDTH - 100, 10, GREEN)
+
+    # Update display and control FPS
+    pygame.display.flip()
+    clock.tick(FPS)
+
+pygame.quit()
