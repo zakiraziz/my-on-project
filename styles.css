@@ -1,140 +1,185 @@
- /* General Styling */
+/* General body styling */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(to bottom, #87CEEB, #ffffff);
-  color: #333;
-  line-height: 1.6;
+  background: linear-gradient(to bottom, #121212, #333);
+  color: #f4f4f4;
+  text-align: center;
+  overflow-x: hidden;
 }
 
-/* Container Styling */
+/* Container for the game */
 .container {
   max-width: 600px;
-  margin: 50px auto;
-  text-align: center;
-  padding: 0 20px;
+  margin: 20px auto;
+  padding: 20px;
+  box-shadow: 0px 6px 30px rgba(0, 0, 0, 0.8);
+  background: #242424;
+  border-radius: 15px;
+  position: relative;
+  border: 1px solid #3a3a3a;
+  overflow: hidden;
 }
 
+/* Header styling */
 header h1 {
-  font-size: 2.5rem;
-  color: #007BFF;
-  margin-bottom: 20px;
-  animation: fadeIn 1.5s ease-in-out;
+  font-size: 3rem;
+  margin: 20px 0;
+  color: #ffd700;
+  text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+  animation: glow 1.5s infinite alternate;
 }
 
-/* Search Bar */
-.search-bar {
+/* Glow animation for the header */
+@keyframes glow {
+  from {
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.8);
+  }
+  to {
+    text-shadow: 3px 3px 20px rgba(255, 215, 0, 1);
+  }
+}
+
+/* Game canvas styling */
+canvas {
+  border: 4px solid #ffd700;
+  background: radial-gradient(circle, #222, #000);
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.7);
+  margin: 20px auto;
+  display: block;
+  border-radius: 12px;
+  position: relative;
+  transition: transform 0.2s ease;
+}
+
+canvas:hover {
+  transform: scale(1.02);
+}
+
+/* Controls section */
+.controls {
   display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 0;
 }
 
-input {
-  flex: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
+/* Button styling */
 button {
-  padding: 10px 15px;
-  background-color: #007BFF;
-  color: white;
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  color: #fff;
+  background: linear-gradient(to bottom, #0066cc, #003d99);
   border: none;
-  border-radius: 5px;
-  font-size: 14px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease-in-out;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background: linear-gradient(to bottom, #005bb5, #003080);
+  transform: translateY(-3px) scale(1.05);
 }
 
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.4);
 }
 
-/* Weather Display */
-.weather-display {
-  margin-top: 20px;
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 1.5s ease-in-out;
+/* Stats section */
+.stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
 }
 
-.weather-display h2 {
+.stats p {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+  color: #ffd700;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.stats span {
   font-size: 1.5rem;
-  margin-bottom: 10px;
+  color: #ff5733;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
 
-.weather-display p {
-  margin: 5px 0;
+/* Game instructions section */
+aside {
+  margin-top: 20px;
+  padding: 15px;
+  background: #1e1e1e;
+  border-radius: 10px;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+aside h2 {
+  font-size: 1.8rem;
+  color: #ffd700;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+aside ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+}
+
+aside ul li {
   font-size: 1rem;
+  margin: 10px 0;
+  padding: 5px 0;
+  border-bottom: 1px dashed #666;
 }
 
-.weather-display img {
-  width: 100px;
-  height: auto;
-  margin: 10px auto;
+aside ul li:last-child {
+  border-bottom: none;
 }
 
-/* Loading Spinner */
-.loading {
-  display: none;
-  margin: 20px auto;
-  width: 50px;
-  height: 50px;
-  border: 5px solid #ccc;
-  border-top-color: #007BFF;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
+/* Footer styling */
+footer {
+  margin-top: 20px;
+  padding: 10px 0;
+  font-size: 0.9rem;
+  color: #ccc;
 }
 
-/* Animations */
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
+footer a {
+  color: #ffd700;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 600px) {
+  .container {
+    padding: 15px;
   }
-  100% {
-    transform: rotate(360deg);
-  }
-}
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.fade-in {
-  animation: fadeIn 1s ease-in-out;
-}
-
-/* Responsive Design */
-@media (max-width: 768px) {
-  input {
-    width: 100%;
+  header h1 {
+    font-size: 2rem;
   }
 
   button {
-    flex: 1;
-    font-size: 14px;
+    padding: 10px 20px;
+    font-size: 1rem;
   }
 
-  .weather-display {
-    padding: 15px;
-    font-size: 14px;
+  .stats p {
+    font-size: 1rem;
+  }
+
+  aside ul li {
+    font-size: 0.9rem;
   }
 }
