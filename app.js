@@ -1,140 +1,137 @@
-document.getElementById("searchButton").addEventListener("click", fetchWeatherByCity);
-document.getElementById("useCurrentLocation").addEventListener("click", fetchWeatherByLocation);
-document.getElementById("voiceSearch").addEventListener("click", startVoiceSearch);
+// Game setup
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-const weatherDisplay = document.getElementById("weatherDisplay");
-const loadingSpinner = document.getElementById("loadingSpinner");
+// Game variables
+let playerCar = { x: 175, y: 500, width: 50, height: 80, speed: 5 };
+let enemyCars = [];
+let score = 0;
+let lives = 3;
+let gameInterval;
+let isGameOver = false;
 
-// Fetch weather by city
-async function fetchWeatherByCity() {
-  const city = document.getElementById("cityInput").value.trim();
+// Load assets
+const playerCarImage = new Image();
+playerCarImage.src = "player_car.png"; // Replace with your car image path
 
-  if (!city) {
-    alert("Please enter a city name!"); 
-    return;
-  }
+const enemyCarImage = new Image();
+enemyCarImage.src = "enemy_car.png"; // Replace with your enemy car image path
 
-  await fetchWeather(`/weather?city=${encodeURIComponent(city)}`);
+// Draw player car
+function drawPlayerCar() {
+  ctx.drawImage(playerCarImage, playerCar.x, playerCar.y, playerCar.width, playerCar.height);
 }
 
-// Fetch weather by geolocation
-async function fetchWeatherByLocation() {
-  if (!navigator.geolocation) {
-    alert("Geolocation is not supported by your browser.");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(async (position) => {
-    const { latitude, longitude } = position.coords;
-    await fetchWeather(`/weather?lat=${latitude}&lon=${longitude}`);
+// Draw enemy cars
+function drawEnemyCars() {
+  enemyCars.forEach(car => {
+    ctx.drawImage(enemyCarImage, car.x, car.y, car.width, car.height);
   });
 }
 
-// Fetch and display weather
-async function fetchWeather(url) {
-  weatherDisplay.innerHTML = "";
-  loadingSpinner.style.display = "block";
+// Move the player car
+function movePlayerCar() {
+  const keys = Object.keys(keysDown);
+  if (keys.includes("ArrowLeft") && playerCar.x > 50) {
+    playerCar.x -= playerCar.speed;
+  }
+  if (keys.includes("ArrowRight") && playerCar.x < canvas.width - playerCar.width - 50) {
+    playerCar.x += playerCar.speed;
+  }
+}
 
-  try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
+// Generate new enemy cars
+function generateEnemyCars() {
+  if (Math.random() < 0.02) {
+    let x = Math.floor(Math.random() * (canvas.width - 50)) + 50;
+    let y = -100;
+    enemyCars.push({ x, y, width: 50, height: 80, speed: 3 + score / 10 });
+  }
+}
 
-    const data = await response.json();
-    loadingSpinner.style.display = "none";
+// Move enemy cars
+function moveEnemyCars() {
+  for (let i = 0; i < enemyCars.length; i++) {
+    enemyCars[i].y += enemyCars[i].speed;
 
-    if (data.error) {
-      weatherDisplay.innerHTML = `<p>${data.error}</p>`;
-    } else {
-      displayWeather(data);
+    if (enemyCars[i].y > canvas.height) {
+      enemyCars.splice(i, 1);
+      score++;
+      if (score % 5 === 0) {
+        enemyCars.forEach(car => car.speed += 0.5); // Increase speed of all enemies every 5 points
+      }
     }
-  } catch (error) {
-    loadingSpinner.style.display = "none";
-    console.error("Error fetching weather data:", error);
-    weatherDisplay.innerHTML = `<p>Error fetching weather data. Please try again later.</p>`;
   }
 }
 
-// Display weather data
-function displayWeather(data) {
-  const { name, main, weather, sys } = data;
-  const iconUrl = `http://openweathermap.org/img/wn/${weather[0].icon}@2x.png`;
-  const sunrise = new Date(sys.sunrise * 1000).toLocaleTimeString();
-  const sunset = new Date(sys.sunset * 1000).toLocaleTimeString();
-
-  weatherDisplay.innerHTML = `
-    <h2>Weather in ${name}</h2>
-    <img src="${iconUrl}" alt="${weather[0].description}" />
-    <p><strong>Temperature:</strong> ${main.temp}°C</p>
-    <p><strong>Condition:</strong> ${weather[0].description}</p>
-    <p><strong>Humidity:</strong> ${main.humidity}%</p>
-    <p><strong>Sunrise:</strong> ${sunrise}</p>
-    <p><strong>Sunset:</strong> ${sunset}</p>
-  `;
-
-  updateBackground(weather[0].description);
-}
-
-// Update background based on weather condition
-function updateBackground(condition) {
-  const body = document.body;
-  if (condition.includes("rain")) {
-    body.style.background = "url('rainy.jpg') no-repeat center center/cover";
-  } else if (condition.includes("clear")) {
-    body.style.background = "url('sunny.jpg') no-repeat center center/cover";
-  } else if (condition.includes("cloud")) {
-    body.style.background = "url('cloudy.jpg') no-repeat center center/cover";
-  } else {
-    body.style.background = "linear-gradient(to bottom, #87CEEB, #ffffff)";
-  }
-}
-
-// Voice search
-function startVoiceSearch() {
-  const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-  recognition.start();
-
-  recognition.onresult = (event) => {
-    const city = event.results[0][0].transcript;
-    document.getElementById("cityInput").value = city;
-    fetchWeatherByCity();
-  };
-
-  recognition.onerror = (event) => {
-    alert("Voice recognition error: " + event.error);
-  };
-}
-document.getElementById("searchButton").addEventListener("click", async () => {
-  const city = document.getElementById("cityInput").value.trim();
-  const weatherDisplay = document.getElementById("weatherDisplay");
-  const loadingSpinner = document.getElementById("loadingSpinner");
-
-  if (!city) {
-    alert("Please enter a city name!");
-    return;
-  }
-
-  weatherDisplay.innerHTML = "";
-  loadingSpinner.style.display = "block";
-
-  try {
-    const response = await fetch(`/weather?city=${encodeURIComponent(city)}`);
-    const data = await response.json();
-    loadingSpinner.style.display = "none";
-
-    if (data.error) {
-      weatherDisplay.innerHTML = `<p>${data.error}</p>`;
-    } else {
-      const { name, main, weather } = data;
-      weatherDisplay.innerHTML = `
-        <h2>Weather in ${name}</h2>
-        <p><strong>Temperature:</strong> ${main.temp}°C</p>
-        <p><strong>Condition:</strong> ${weather[0].description}</p>
-        <p><strong>Humidity:</strong> ${main.humidity}%</p>
-      `;
+// Detect collisions
+function detectCollisions() {
+  const playerRect = { x: playerCar.x, y: playerCar.y, width: playerCar.width, height: playerCar.height };
+  enemyCars.forEach(car => {
+    const enemyRect = { x: car.x, y: car.y, width: car.width, height: car.height };
+    if (isCollision(playerRect, enemyRect)) {
+      lives--;
+      enemyCars.splice(enemyCars.indexOf(car), 1); // Remove the collided enemy car
+      if (lives === 0) {
+        gameOver();
+      }
     }
-  } catch (error) {
-    loadingSpinner.style.display = "none";
-    weatherDisplay.innerHTML = `<p>Unable to fetch weather data. Please try again.</p>`;
-    console.error("Error:", error);
-  }
+  });
+}
+
+// Check for collision between two rectangles
+function isCollision(rect1, rect2) {
+  return rect1.x < rect2.x + rect2.width &&
+    rect1.x + rect1.width > rect2.x &&
+    rect1.y < rect2.y + rect2.height &&
+    rect1.y + rect1.height > rect2.y;
+}
+
+// Game over logic
+function gameOver() {
+  isGameOver = true;
+  document.getElementById("gameOver").style.display = "block";
+  document.getElementById("gameOver").querySelector("div").innerHTML = `Game Over! <br> Score: ${score}`;
+}
+
+// Restart the game
+function restartGame() {
+  score = 0;
+  lives = 3;
+  enemyCars = [];
+  isGameOver = false;
+  document.getElementById("gameOver").style.display = "none";
+  gameLoop();
+}
+
+// Game loop
+function gameLoop() {
+  if (isGameOver) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  drawPlayerCar();
+  drawEnemyCars();
+  movePlayerCar();
+  generateEnemyCars();
+  moveEnemyCars();
+  detectCollisions();
+
+  document.getElementById("score").textContent = `Score: ${score}`;
+  document.getElementById("lives").textContent = `Lives: ${lives}`;
+  
+  requestAnimationFrame(gameLoop);
+}
+
+// Set up key listener for player car movement
+let keysDown = {};
+window.addEventListener("keydown", (e) => {
+  keysDown[e.key] = true;
 });
+window.addEventListener("keyup", (e) => {
+  delete keysDown[e.key];
+});
+
+// Initialize game and start loop
+document.getElementById("restartBtn").addEventListener("click", restartGame);
+gameLoop();
