@@ -5,7 +5,7 @@ import sys
 # Initialize Pygame
 pygame.init()
 
-# Screen dimensions and settings
+# Screen dimensions and settings 
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 FPS = 60
