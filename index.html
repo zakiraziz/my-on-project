@@ -4,47 +4,92 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Car Racing Game</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="s.css">
 </head>
 <body>
   <!-- Game Container -->
-  <div id="gameContainer">
-    <!-- Background image for the game container -->
-    <div id="background"></div>
+  <div id="gameContainer" style="border: 2px solid black; width: 400px; height: 600px; position: relative; margin: auto; background-color: lightgray;">
+    <!-- Background with scrolling effect -->
+    <div id="background" style="position: absolute; width: 100%; height: 100%; background: url('road-background.jpg') repeat-y center; background-size: cover; animation: scrollBackground 3s linear infinite;"></div>
 
     <!-- Game Canvas -->
-    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <canvas id="gameCanvas" width="400" height="600" style="position: absolute;"></canvas>
 
     <!-- Score and Lives Display -->
-    <div id="score">Score: 0</div>
-    <div id="lives">Lives: 3</div>
+    <div id="score" style="position: absolute; top: 10px; left: 10px; font-size: 18px; color: black; font-family: Arial;">Score: 0</div>
+    <div id="lives" style="position: absolute; top: 10px; right: 10px; font-size: 18px; color: black; font-family: Arial;">Lives: 3</div>
 
-    <!-- Instructions Display -->
-    <div id="instructions">
+    <!-- Instructions -->
+    <div id="instructions" style="position: absolute; bottom: 10px; width: 100%; text-align: center; font-size: 14px; color: black; font-family: Arial;">
       <p>Use the arrow keys to move your car and avoid obstacles!</p>
     </div>
 
-    <!-- Game Over Screen (hidden by default) -->
-    <div id="gameOver" style="display: none;">
-      <div id="gameOverText">Game Over!</div>
+    <!-- Power-Ups Display -->
+    <div id="powerUps" style="position: absolute; bottom: 50px; left: 10px; font-size: 14px; color: green; font-family: Arial; display: none;">
+      <span id="powerUpText">Shield Active!</span>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div id="gameOver" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.8); padding: 20px; text-align: center; color: white; border-radius: 10px;">
+      <div id="gameOverText" style="font-size: 24px; margin-bottom: 10px;">Game Over!</div>
       <div>Final Score: <span id="finalScore">0</span></div>
-      <button id="restartBtn">Restart</button>
-      <p id="gameOverMessage">Better luck next time!</p>
+      <button id="restartBtn" onclick="restartGame()" style="margin-top: 10px; padding: 10px; background-color: lightblue; border: none; cursor: pointer;">Restart</button>
     </div>
   </div>
 
-  <!-- Sound Settings -->
-  <div id="soundSettings">
+  <!-- Difficulty Selector -->
+  <div id="difficultySelector" style="text-align: center; margin-top: 20px;">
+    <label for="difficulty">Choose Difficulty:</label>
+    <select id="difficulty" onchange="setDifficulty()">
+      <option value="easy">Easy</option>
+      <option value="medium" selected>Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+  </div>
+
+  <!-- Sound and Music Controls -->
+  <div id="soundSettings" style="text-align: center; margin-top: 10px;">
     <label for="soundToggle">Sound:</label>
     <input type="checkbox" id="soundToggle" checked>
+    <label for="musicToggle">Music:</label>
+    <input type="checkbox" id="musicToggle" checked>
   </div>
 
   <!-- Pause Button -->
-  <div id="pauseButton">
-    <button onclick="togglePause()">Pause</button>
+  <div id="pauseButton" style="text-align: center; margin-top: 10px;">
+    <button onclick="togglePause()" style="padding: 10px; background-color: yellow; border: none; cursor: pointer;">Pause</button>
+  </div>
+
+  <!-- Leaderboard -->
+  <div id="leaderboard" style="text-align: center; margin-top: 20px; display: none;">
+    <h3>Leaderboard</h3>
+    <ol id="leaderboardList" style="padding-left: 20px;"></ol>
+  </div>
+
+  <!-- Themed Backgrounds -->
+  <div id="themeSelector" style="text-align: center; margin-top: 10px;">
+    <label for="theme">Choose Theme:</label>
+    <select id="theme" onchange="changeTheme()">
+      <option value="road-background.jpg">Classic</option>
+      <option value="desert-road.jpg">Desert</option>
+      <option value="forest-road.jpg">Forest</option>
+    </select>
+  </div>
+
+  <!-- Game Images -->
+  <div style="text-align: center; margin-top: 20px;">
+    <img src="car-icon.png" alt="Car Icon" style="width: 50px; height: auto; margin-right: 10px;">
+    <img src="obstacle-icon.png" alt="Obstacle Icon" style="width: 50px; height: auto;">
   </div>
 
   <script src="app.js"></script>
-  <link rel="py" href="app.py">
+
+  <style>
+    /* Background Scrolling Animation */
+    @keyframes scrollBackground {
+      0% { background-position-y: 0; }
+      100% { background-position-y: 100%; }
+    }
+  </style>
 </body>
 </html>
