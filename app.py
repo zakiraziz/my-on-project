@@ -17,6 +17,7 @@ RED = (255, 0, 0)
 YELLOW = (255, 255, 0)
 GRAY = (50, 50, 50)
 GREEN = (0, 255, 0)
+BLUE = (0, 0, 255)
 
 # Set up the screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -29,8 +30,17 @@ player_car = pygame.transform.scale(player_car, (50, 100))
 enemy_car = pygame.image.load("enemy_car.png")
 enemy_car = pygame.transform.scale(enemy_car, (50, 100))
 
+power_up_image = pygame.image.load("power_up.png")
+power_up_image = pygame.transform.scale(power_up_image, (30, 30))
+
 road_image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 road_image.fill(GRAY)
+
+# Sound effects
+crash_sound = pygame.mixer.Sound("crash.wav")
+power_up_sound = pygame.mixer.Sound("power_up.wav")
+pygame.mixer.music.load("background_music.mp3")
+pygame.mixer.music.play(-1)  # Loop indefinitely
 
 # Font for score and lives
 font = pygame.font.Font(None, 36)
@@ -39,21 +49,21 @@ font = pygame.font.Font(None, 36)
 player_x = SCREEN_WIDTH // 2 - 25
 player_y = SCREEN_HEIGHT - 120
 player_speed = 6
+player_shield = False
 
 enemy_cars = [{"x": random.randint(50, SCREEN_WIDTH - 100), "y": random.randint(-300, -100), "speed": random.randint(3, 6)} for _ in range(3)]
+power_ups = [{"x": random.randint(50, SCREEN_WIDTH - 100), "y": random.randint(-600, -100), "speed": 4}]
 score = 0
 lives = 3
-
 road_y = 0
+paused = False
 
 # Functions
 def draw_text(text, x, y, color=WHITE):
-    """Render and display text on the screen."""
     text_surface = font.render(text, True, color)
     screen.blit(text_surface, (x, y))
 
 def move_road():
-    """Animate the scrolling road."""
     global road_y
     road_y += 4
     if road_y >= SCREEN_HEIGHT:
@@ -62,7 +72,7 @@ def move_road():
     screen.blit(road_image, (0, road_y))
 
 def game_over():
-    """Display a game-over screen."""
+    pygame.mixer.music.stop()
     screen.fill(BLACK)
     draw_text("GAME OVER!", SCREEN_WIDTH // 2 - 80, SCREEN_HEIGHT // 2 - 40, RED)
     draw_text(f"Score: {score}", SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2, WHITE)
@@ -78,35 +88,46 @@ def game_over():
                 return
 
 def restart_game():
-    """Restart the game."""
-    global player_x, player_y, enemy_cars, score, lives
+    global player_x, player_y, enemy_cars, power_ups, score, lives, player_shield
     player_x = SCREEN_WIDTH // 2 - 25
     player_y = SCREEN_HEIGHT - 120
     enemy_cars[:] = [{"x": random.randint(50, SCREEN_WIDTH - 100), "y": random.randint(-300, -100), "speed": random.randint(3, 6)} for _ in range(3)]
+    power_ups[:] = [{"x": random.randint(50, SCREEN_WIDTH - 100), "y": random.randint(-600, -100), "speed": 4}]
     score = 0
     lives = 3
+    player_shield = False
+    pygame.mixer.music.play(-1)
+
+def toggle_pause():
+    global paused
+    paused = not paused
 
 # Main game loop
 running = True
 clock = pygame.time.Clock()
 
 while running:
-    # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_p:
+                toggle_pause()
 
-    # Move player car
+    if paused:
+        draw_text("PAUSED", SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2, YELLOW)
+        pygame.display.flip()
+        clock.tick(FPS)
+        continue
+
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] and player_x > 50:
         player_x -= player_speed
     if keys[pygame.K_RIGHT] and player_x < SCREEN_WIDTH - 100:
         player_x += player_speed
 
-    # Move road
     move_road()
 
-    # Move enemy cars
     for enemy in enemy_cars:
         enemy["y"] += enemy["speed"]
         if enemy["y"] > SCREEN_HEIGHT:
@@ -115,29 +136,44 @@ while running:
             enemy["speed"] = random.randint(3, 6)
             score += 1
 
-    # Check for collisions
+    for power_up in power_ups:
+        power_up["y"] += power_up["speed"]
+        if power_up["y"] > SCREEN_HEIGHT:
+            power_up["y"] = random.randint(-600, -100)
+            power_up["x"] = random.randint(50, SCREEN_WIDTH - 100)
+
     player_rect = pygame.Rect(player_x, player_y, 50, 100)
     for enemy in enemy_cars:
         enemy_rect = pygame.Rect(enemy["x"], enemy["y"], 50, 100)
         if player_rect.colliderect(enemy_rect):
-            lives -= 1
+            if player_shield:
+                player_shield = False
+            else:
+                lives -= 1
+                crash_sound.play()
             enemy["y"] = random.randint(-300, -100)
-            enemy["x"] = random.randint(50, SCREEN_WIDTH - 100)
             if lives == 0:
                 game_over()
 
-    # Draw player car
+    for power_up in power_ups:
+        power_up_rect = pygame.Rect(power_up["x"], power_up["y"], 30, 30)
+        if player_rect.colliderect(power_up_rect):
+            player_shield = True
+            power_up_sound.play()
+            power_up["y"] = random.randint(-600, -100)
+
     screen.blit(player_car, (player_x, player_y))
 
-    # Draw enemy cars
     for enemy in enemy_cars:
         screen.blit(enemy_car, (enemy["x"], enemy["y"]))
 
-    # Display score and lives
+    for power_up in power_ups:
+        screen.blit(power_up_image, (power_up["x"], power_up["y"]))
+
     draw_text(f"Score: {score}", 10, 10)
     draw_text(f"Lives: {lives}", SCREEN_WIDTH - 100, 10, GREEN)
+    draw_text(f"Shield: {'Active' if player_shield else 'Inactive'}", 10, 50, BLUE)
 
-    # Update display and control FPS
     pygame.display.flip()
     clock.tick(FPS)
 
