@@ -9,6 +9,7 @@ let score = 0;
 let lives = 3;
 let gameInterval;
 let isGameOver = false;
+let isPaused = false;
 
 // Load assets
 const playerCarImage = new Image();
@@ -16,6 +17,22 @@ playerCarImage.src = "player_car.png"; // Replace with your car image path
 
 const enemyCarImage = new Image();
 enemyCarImage.src = "enemy_car.png"; // Replace with your enemy car image path
+
+const backgroundImg = new Image();
+backgroundImg.src = "background.png"; // Replace with your background image path
+
+const crashSound = new Audio("crash.mp3"); // Collision sound
+const scoreSound = new Audio("score.mp3"); // Scoring sound
+
+let backgroundY = 0; // For scrolling background
+
+// Draw background
+function drawBackground() {
+  ctx.drawImage(backgroundImg, 0, backgroundY, canvas.width, canvas.height);
+  ctx.drawImage(backgroundImg, 0, backgroundY - canvas.height, canvas.width, canvas.height);
+  backgroundY += 2;
+  if (backgroundY >= canvas.height) backgroundY = 0;
+}
 
 // Draw player car
 function drawPlayerCar() {
@@ -57,6 +74,7 @@ function moveEnemyCars() {
     if (enemyCars[i].y > canvas.height) {
       enemyCars.splice(i, 1);
       score++;
+      scoreSound.play(); // Play scoring sound
       if (score % 5 === 0) {
         enemyCars.forEach(car => car.speed += 0.5); // Increase speed of all enemies every 5 points
       }
@@ -70,6 +88,7 @@ function detectCollisions() {
   enemyCars.forEach(car => {
     const enemyRect = { x: car.x, y: car.y, width: car.width, height: car.height };
     if (isCollision(playerRect, enemyRect)) {
+      crashSound.play(); // Play collision sound
       lives--;
       enemyCars.splice(enemyCars.indexOf(car), 1); // Remove the collided enemy car
       if (lives === 0) {
@@ -91,7 +110,7 @@ function isCollision(rect1, rect2) {
 function gameOver() {
   isGameOver = true;
   document.getElementById("gameOver").style.display = "block";
-  document.getElementById("gameOver").querySelector("div").innerHTML = `Game Over! <br> Score: ${score}`;
+  document.getElementById("finalScore").textContent = score;
 }
 
 // Restart the game
@@ -104,12 +123,21 @@ function restartGame() {
   gameLoop();
 }
 
+// Pause the game
+function togglePause() {
+  isPaused = !isPaused;
+  if (!isPaused) {
+    gameLoop();
+  }
+}
+
 // Game loop
 function gameLoop() {
-  if (isGameOver) return;
+  if (isGameOver || isPaused) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   
+  drawBackground();
   drawPlayerCar();
   drawEnemyCars();
   movePlayerCar();
@@ -134,4 +162,6 @@ window.addEventListener("keyup", (e) => {
 
 // Initialize game and start loop
 document.getElementById("restartBtn").addEventListener("click", restartGame);
+document.getElementById("pauseButton").addEventListener("click", togglePause);
 gameLoop();
+
