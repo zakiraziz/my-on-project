@@ -41,18 +41,17 @@ function drawPlayerCar() {
 
 // Draw enemy cars
 function drawEnemyCars() {
-  enemyCars.forEach(car => {
+  enemyCars.forEach((car) => {
     ctx.drawImage(enemyCarImage, car.x, car.y, car.width, car.height);
   });
 }
 
 // Move the player car
 function movePlayerCar() {
-  const keys = Object.keys(keysDown);
-  if (keys.includes("ArrowLeft") && playerCar.x > 50) {
+  if (keysDown["ArrowLeft"] && playerCar.x > 0) {
     playerCar.x -= playerCar.speed;
   }
-  if (keys.includes("ArrowRight") && playerCar.x < canvas.width - playerCar.width - 50) {
+  if (keysDown["ArrowRight"] && playerCar.x < canvas.width - playerCar.width) {
     playerCar.x += playerCar.speed;
   }
 }
@@ -60,7 +59,7 @@ function movePlayerCar() {
 // Generate new enemy cars
 function generateEnemyCars() {
   if (Math.random() < 0.02) {
-    let x = Math.floor(Math.random() * (canvas.width - 50)) + 50;
+    let x = Math.random() * (canvas.width - 50);
     let y = -100;
     enemyCars.push({ x, y, width: 50, height: 80, speed: 3 + score / 10 });
   }
@@ -76,7 +75,7 @@ function moveEnemyCars() {
       score++;
       scoreSound.play(); // Play scoring sound
       if (score % 5 === 0) {
-        enemyCars.forEach(car => car.speed += 0.5); // Increase speed of all enemies every 5 points
+        enemyCars.forEach((car) => (car.speed += 0.5)); // Increase speed every 5 points
       }
     }
   }
@@ -84,13 +83,18 @@ function moveEnemyCars() {
 
 // Detect collisions
 function detectCollisions() {
-  const playerRect = { x: playerCar.x, y: playerCar.y, width: playerCar.width, height: playerCar.height };
-  enemyCars.forEach(car => {
+  const playerRect = {
+    x: playerCar.x,
+    y: playerCar.y,
+    width: playerCar.width,
+    height: playerCar.height,
+  };
+  enemyCars.forEach((car, index) => {
     const enemyRect = { x: car.x, y: car.y, width: car.width, height: car.height };
     if (isCollision(playerRect, enemyRect)) {
       crashSound.play(); // Play collision sound
       lives--;
-      enemyCars.splice(enemyCars.indexOf(car), 1); // Remove the collided enemy car
+      enemyCars.splice(index, 1); // Remove collided car
       if (lives === 0) {
         gameOver();
       }
@@ -100,10 +104,12 @@ function detectCollisions() {
 
 // Check for collision between two rectangles
 function isCollision(rect1, rect2) {
-  return rect1.x < rect2.x + rect2.width &&
+  return (
+    rect1.x < rect2.x + rect2.width &&
     rect1.x + rect1.width > rect2.x &&
     rect1.y < rect2.y + rect2.height &&
-    rect1.y + rect1.height > rect2.y;
+    rect1.y + rect1.height > rect2.y
+  );
 }
 
 // Game over logic
@@ -111,6 +117,7 @@ function gameOver() {
   isGameOver = true;
   document.getElementById("gameOver").style.display = "block";
   document.getElementById("finalScore").textContent = score;
+  cancelAnimationFrame(gameInterval);
 }
 
 // Restart the game
@@ -136,7 +143,7 @@ function gameLoop() {
   if (isGameOver || isPaused) return;
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+
   drawBackground();
   drawPlayerCar();
   drawEnemyCars();
@@ -147,11 +154,11 @@ function gameLoop() {
 
   document.getElementById("score").textContent = `Score: ${score}`;
   document.getElementById("lives").textContent = `Lives: ${lives}`;
-  
-  requestAnimationFrame(gameLoop);
+
+  gameInterval = requestAnimationFrame(gameLoop);
 }
 
-// Set up key listener for player car movement
+// Key listeners
 let keysDown = {};
 window.addEventListener("keydown", (e) => {
   keysDown[e.key] = true;
@@ -160,8 +167,7 @@ window.addEventListener("keyup", (e) => {
   delete keysDown[e.key];
 });
 
-// Initialize game and start loop
+// Initialize game
 document.getElementById("restartBtn").addEventListener("click", restartGame);
 document.getElementById("pauseButton").addEventListener("click", togglePause);
 gameLoop();
-
