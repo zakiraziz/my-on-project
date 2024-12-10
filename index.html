@@ -4,92 +4,109 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Car Racing Game</title>
-  <link rel="stylesheet" href="s.css">
-</head>
-<body>
-  <!-- Game Container -->
-  <div id="gameContainer" style="border: 2px solid black; width: 400px; height: 600px; position: relative; margin: auto; background-color: lightgray;">
-    <!-- Background with scrolling effect -->
-    <div id="background" style="position: absolute; width: 100%; height: 100%; background: url('road-background.jpg') repeat-y center; background-size: cover; animation: scrollBackground 3s linear infinite;"></div>
-
-    <!-- Game Canvas -->
-    <canvas id="gameCanvas" width="400" height="600" style="position: absolute;"></canvas>
-
-    <!-- Score and Lives Display -->
-    <div id="score" style="position: absolute; top: 10px; left: 10px; font-size: 18px; color: black; font-family: Arial;">Score: 0</div>
-    <div id="lives" style="position: absolute; top: 10px; right: 10px; font-size: 18px; color: black; font-family: Arial;">Lives: 3</div>
-
-    <!-- Instructions -->
-    <div id="instructions" style="position: absolute; bottom: 10px; width: 100%; text-align: center; font-size: 14px; color: black; font-family: Arial;">
-      <p>Use the arrow keys to move your car and avoid obstacles!</p>
-    </div>
-
-    <!-- Power-Ups Display -->
-    <div id="powerUps" style="position: absolute; bottom: 50px; left: 10px; font-size: 14px; color: green; font-family: Arial; display: none;">
-      <span id="powerUpText">Shield Active!</span>
-    </div>
-
-    <!-- Game Over Screen -->
-    <div id="gameOver" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.8); padding: 20px; text-align: center; color: white; border-radius: 10px;">
-      <div id="gameOverText" style="font-size: 24px; margin-bottom: 10px;">Game Over!</div>
-      <div>Final Score: <span id="finalScore">0</span></div>
-      <button id="restartBtn" onclick="restartGame()" style="margin-top: 10px; padding: 10px; background-color: lightblue; border: none; cursor: pointer;">Restart</button>
-    </div>
-  </div>
-
-  <!-- Difficulty Selector -->
-  <div id="difficultySelector" style="text-align: center; margin-top: 20px;">
-    <label for="difficulty">Choose Difficulty:</label>
-    <select id="difficulty" onchange="setDifficulty()">
-      <option value="easy">Easy</option>
-      <option value="medium" selected>Medium</option>
-      <option value="hard">Hard</option>
-    </select>
-  </div>
-
-  <!-- Sound and Music Controls -->
-  <div id="soundSettings" style="text-align: center; margin-top: 10px;">
-    <label for="soundToggle">Sound:</label>
-    <input type="checkbox" id="soundToggle" checked>
-    <label for="musicToggle">Music:</label>
-    <input type="checkbox" id="musicToggle" checked>
-  </div>
-
-  <!-- Pause Button -->
-  <div id="pauseButton" style="text-align: center; margin-top: 10px;">
-    <button onclick="togglePause()" style="padding: 10px; background-color: yellow; border: none; cursor: pointer;">Pause</button>
-  </div>
-
-  <!-- Leaderboard -->
-  <div id="leaderboard" style="text-align: center; margin-top: 20px; display: none;">
-    <h3>Leaderboard</h3>
-    <ol id="leaderboardList" style="padding-left: 20px;"></ol>
-  </div>
-
-  <!-- Themed Backgrounds -->
-  <div id="themeSelector" style="text-align: center; margin-top: 10px;">
-    <label for="theme">Choose Theme:</label>
-    <select id="theme" onchange="changeTheme()">
-      <option value="road-background.jpg">Classic</option>
-      <option value="desert-road.jpg">Desert</option>
-      <option value="forest-road.jpg">Forest</option>
-    </select>
-  </div>
-
-  <!-- Game Images -->
-  <div style="text-align: center; margin-top: 20px;">
-    <img src="car-icon.png" alt="Car Icon" style="width: 50px; height: auto; margin-right: 10px;">
-    <img src="obstacle-icon.png" alt="Obstacle Icon" style="width: 50px; height: auto;">
-  </div>
-
-  <script src="app.js"></script>
-
   <style>
-    /* Background Scrolling Animation */
-    @keyframes scrollBackground {
-      0% { background-position-y: 0; }
-      100% { background-position-y: 100%; }
+    /* General body styling */
+    body {
+      font-family: 'Roboto', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(120deg, #121212, #333);
+      background-size: 300% 300%;
+      animation: gradientShift 10s infinite;
+      color: #f4f4f4;
+      text-align: center;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Game container styling */
+    #gameContainer {
+      width: 400px;
+      height: 600px;
+      position: relative;
+      margin: 20px auto;
+      background-color: black;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 2px solid #555;
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    #gameInfo {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      color: #fff;
+      font-size: 16px;
+    }
+
+    #gameControls {
+      margin-top: 20px;
+    }
+
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #gameOver {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.8);
+      padding: 20px;
+      text-align: center;
+      color: white;
+      border-radius: 10px;
+    }
+
+    #gameOver h2 {
+      margin: 0;
+      margin-bottom: 10px;
     }
   </style>
+</head>
+<body>
+  <div id="gameContainer">
+    <div id="gameInfo">
+      <span id="score">Score: 0</span>
+      <span id="lives">Lives: 3</span>
+    </div>
+    <canvas id="gameCanvas" width="400" height="600"></canvas>
+    <div id="gameOver">
+      <h2>Game Over</h2>
+      <p>Your Score: <span id="finalScore">0</span></p>
+      <button id="restartBtn">Restart</button>
+    </div>
+  </div>
+
+  <div id="gameControls">
+    <button id="pauseButton">Pause</button>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
+
