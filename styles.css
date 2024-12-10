@@ -1,9 +1,9 @@
-/* General body styling with animated gradient */
+/* General body styling */
 body {
   font-family: 'Roboto', Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background: linear-gradient(120deg, #121212, #333);
+  background: linear-gradient(120deg, #1e1e1e, #2a2a2a);
   background-size: 300% 300%;
   animation: gradientShift 10s infinite;
   color: #f4f4f4;
@@ -17,137 +17,132 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* Loading screen styling */
-#loadingScreen {
-  position: fixed;
-  top: 0;
-  left: 0;
+/* Game container styling */
+#gameContainer {
+  border: 4px solid #444;
+  width: 400px;
+  height: 600px;
+  position: relative;
+  margin: 50px auto;
+  background: linear-gradient(180deg, #e8e8e8, #d3d3d3);
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+/* Background scrolling */
+#background {
+  position: absolute;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.9);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
+  background: url('road-background.jpg') repeat-y center;
+  background-size: cover;
+  animation: scrollBackground 3s linear infinite;
 }
 
-#loadingScreen span {
-  font-size: 2rem;
-  color: #ffd700;
-  text-shadow: 2px 2px 8px rgba(255, 215, 0, 0.7);
-  animation: pulse 1.5s infinite alternate;
+@keyframes scrollBackground {
+  0% { background-position-y: 0; }
+  100% { background-position-y: 100%; }
 }
 
-@keyframes pulse {
-  from { opacity: 0.6; }
-  to { opacity: 1; }
-}
-
-/* Power-ups display styling */
-#powerUps {
+/* Overlay displays */
+#score, #lives {
   position: absolute;
-  bottom: 80px;
-  left: 10px;
-  font-size: 1.2rem;
+  font-size: 20px;
   font-weight: bold;
-  color: #00ff00;
-  text-shadow: 1px 1px 3px rgba(0, 255, 0, 0.7);
-  display: none;
+  font-family: Arial, sans-serif;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
 }
 
-.powerUpActive {
-  animation: glowPowerUp 1s infinite alternate;
+#score {
+  top: 10px;
+  left: 20px;
+  color: #222;
 }
 
-@keyframes glowPowerUp {
-  from { text-shadow: 1px 1px 3px rgba(0, 255, 0, 0.7); }
-  to { text-shadow: 2px 2px 6px rgba(0, 255, 0, 1); }
+#lives {
+  top: 10px;
+  right: 20px;
+  color: #222;
 }
 
-/* Game Over Screen Enhancements */
-#gameOver {
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.7));
-  box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.8);
-  border: 2px solid #ff4444;
-  animation: shake 0.3s ease-in-out;
-}
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  75% { transform: translateX(5px); }
-}
-
-/* Buttons animation on hover */
-button:hover {
-  background: linear-gradient(to bottom, #ff9900, #cc7700);
-  color: #fff;
-  box-shadow: 0px 6px 15px rgba(255, 153, 0, 0.8);
-  transform: translateY(-5px) scale(1.1);
-}
-
-/* Day/Night mode styling */
-body.dayMode {
-  background: linear-gradient(120deg, #87CEFA, #F0E68C);
-}
-
-body.nightMode {
-  background: linear-gradient(120deg, #121212, #333);
-}
-
-/* Animated stats updates */
-.stats span {
-  transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.stats span.scoreUpdate {
-  color: #00ff00;
-  transform: scale(1.2);
-}
-
-.stats span.livesLost {
-  color: #ff0000;
-  transform: scale(1.2);
-}
-
-/* Footer animation */
-footer {
-  font-size: 0.9rem;
-  color: #ccc;
-  position: relative;
-}
-
-footer a {
-  position: relative;
-  color: #ffd700;
-  text-decoration: none;
-}
-
-footer a::after {
-  content: '';
+/* Instructions */
+#instructions {
   position: absolute;
-  width: 100%;
-  height: 2px;
-  background: #ffd700;
-  bottom: -2px;
-  left: 0;
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.3s ease;
+  bottom: 20px;
+  width: 90%;
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  font-family: Arial, sans-serif;
 }
 
-footer a:hover::after {
-  transform: scaleX(1);
+/* Buttons and selectors */
+button, select {
+  background-color: #333;
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  margin: 10px;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
 }
 
-/* Responsive adjustments */
-@media screen and (max-width: 600px) {
-  header h1 {
-    font-size: 1.8rem;
+button:hover, select:hover {
+  background-color: #555;
+}
+
+/* Checkbox and labels */
+input[type="checkbox"] {
+  transform: scale(1.2);
+  margin: 0 5px;
+}
+
+label {
+  font-size: 14px;
+  color: #fff;
+}
+
+/* Game Over screen */
+#gameOver {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.85);
+  padding: 30px;
+  text-align: center;
+  color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+  font-size: 18px;
+}
+
+/* Leaderboard Styling */
+#leaderboard {
+  margin-top: 20px;
+  font-size: 18px;
+  text-align: center;
+  color: #ddd;
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+  #gameContainer {
+    width: 100%;
+    height: 500px;
   }
 
-  .stats p {
-    font-size: 1rem;
+  #instructions {
+    font-size: 12px;
+  }
+
+  button, select {
+    font-size: 14px;
+    padding: 8px 12px;
   }
 }
-
