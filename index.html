@@ -4,95 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Car Racing Game</title>
-  <style>
-    /* General body styling */
-    body {
-      font-family: 'Roboto', Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: linear-gradient(120deg, #121212, #333);
-      background-size: 300% 300%;
-      animation: gradientShift 10s infinite;
-      color: #f4f4f4;
-      text-align: center;
-      overflow-x: hidden;
-    }
-
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-
-    /* Game container styling */
-    #gameContainer {
-      width: 400px;
-      height: 600px;
-      position: relative;
-      margin: 20px auto;
-      background-color: black;
-      overflow: hidden;
-      border-radius: 10px;
-      border: 2px solid #555;
-    }
-
-    canvas {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-
-    #gameInfo {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px;
-      color: #fff;
-      font-size: 16px;
-    }
-
-    #gameControls {
-      margin-top: 20px;
-    }
-
-    button {
-      padding: 10px 20px;
-      margin: 5px;
-      font-size: 16px;
-      border: none;
-      background-color: #007bff;
-      color: #fff;
-      cursor: pointer;
-      border-radius: 5px;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    #gameOver {
-      display: none;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(0, 0, 0, 0.8);
-      padding: 20px;
-      text-align: center;
-      color: white;
-      border-radius: 10px;
-    }
-
-    #gameOver h2 {
-      margin: 0;
-      margin-bottom: 10px;
-    }
-  </style>
 </head>
 <body>
+  <header id="gameHeader">
+    <h1>Car Racing Game</h1>
+  </header>
+
+  <div id="preloader">
+    <p>Loading...</p>
+  </div>
+
   <div id="gameContainer">
     <div id="gameInfo">
       <span id="score">Score: 0</span>
       <span id="lives">Lives: 3</span>
+      <button id="muteButton">Mute</button>
     </div>
     <canvas id="gameCanvas" width="400" height="600"></canvas>
     <div id="gameOver">
@@ -104,9 +30,23 @@
 
   <div id="gameControls">
     <button id="pauseButton">Pause</button>
+    <button id="leaderboardButton">Leaderboard</button>
   </div>
+
+  <div id="leaderboard" style="display:none;">
+    <h2>Leaderboard</h2>
+    <ul id="leaderboardList">
+      <li>Player1 - 1000</li>
+      <li>Player2 - 900</li>
+      <li>Player3 - 800</li>
+    </ul>
+    <button id="closeLeaderboard">Close</button>
+  </div>
+
+  <footer>
+    <p>Created by Zakir Aziz. &copy; 2024</p>
+  </footer>
 
   <script src="script.js"></script>
 </body>
 </html>
-
