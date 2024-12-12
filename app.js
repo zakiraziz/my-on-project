@@ -1,7 +1,7 @@
 // Game setup
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
-
+ 
 // Game variables
 let playerCar = { x: 175, y: 500, width: 50, height: 80, speed: 5 };
 let enemyCars = [];
