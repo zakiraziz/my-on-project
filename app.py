@@ -1,11 +1,12 @@
 import pygame
 import random
 import sys
+import os
 
 # Initialize Pygame
 pygame.init()
 
-# Screen dimensions and settings 
+# Screen dimensions and settings
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 600
 FPS = 60
@@ -19,26 +20,39 @@ GRAY = (50, 50, 50)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 
+# Function to load images with error handling
+def load_image(name, scale=None):
+    try:
+        image = pygame.image.load(name)
+        if scale:
+            image = pygame.transform.scale(image, scale)
+        return image
+    except pygame.error:
+        print(f"Error: Unable to load image {name}")
+        sys.exit()
+
 # Set up the screen
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Car Racing Game")
 
 # Load assets
-player_car = pygame.image.load("player_car.png")
-player_car = pygame.transform.scale(player_car, (50, 100))
-
-enemy_car = pygame.image.load("enemy_car.png")
-enemy_car = pygame.transform.scale(enemy_car, (50, 100))
-
-power_up_image = pygame.image.load("power_up.png")
-power_up_image = pygame.transform.scale(power_up_image, (30, 30))
+player_car = load_image("player_car.png", (50, 100))
+enemy_car = load_image("enemy_car.png", (50, 100))
+power_up_image = load_image("power_up.png", (30, 30))
 
 road_image = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 road_image.fill(GRAY)
 
 # Sound effects
-crash_sound = pygame.mixer.Sound("crash.wav")
-power_up_sound = pygame.mixer.Sound("power_up.wav")
+def load_sound(name):
+    try:
+        return pygame.mixer.Sound(name)
+    except pygame.error:
+        print(f"Error: Unable to load sound {name}")
+        sys.exit()
+
+crash_sound = load_sound("crash.wav")
+power_up_sound = load_sound("power_up.wav")
 pygame.mixer.music.load("background_music.mp3")
 pygame.mixer.music.play(-1)  # Loop indefinitely
 
@@ -178,3 +192,30 @@ while running:
     clock.tick(FPS)
 
 pygame.quit()
+
+from flask import Flask, render_template
+import subprocess
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return render_template('index.html')
+
+@app.route('/start-game')
+def start_game():
+    subprocess.Popen(["python", "pygame_game.py"])
+    return "Game started! Check your desktop."
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+
+def save_score(player_name, score):
+    with open("scores.txt", "a") as file:
+        file.write(f"{player_name},{score}\n")
+@app.route('/leaderboard')
+def leaderboard():
+    with open("scores.txt", "r") as file:
+        scores = [line.strip().split(",") for line in file.readlines()]
+    return {"scores": scores}
