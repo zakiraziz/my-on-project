@@ -3,59 +3,66 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Car Racing Game - A thrilling adventure on the race track.">
   <title>Car Racing Game</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <!-- Welcome Screen -->
-  <div id="welcomeScreen">
+  <div id="welcomeScreen" class="screen">
     <h1>Welcome to the Car Racing Game!</h1>
     <p>Get ready for an exciting adventure.</p>
-    <button id="startGameButton">Start Game</button>
+    <button id="startGameButton" class="btn">Start Game</button>
   </div>
 
-  <header id="gameHeader" style="display: none;">
+  <!-- Game Header -->
+  <header id="gameHeader" class="screen hidden">
     <h1>Car Racing Game</h1>
   </header>
 
-  <div id="preloader" style="display: none;">
+  <!-- Preloader -->
+  <div id="preloader" class="screen hidden">
     <p>Loading...</p>
   </div>
 
-  <div id="gameContainer" style="display: none;">
+  <!-- Game Container -->
+  <div id="gameContainer" class="screen hidden">
     <div id="gameInfo">
       <span id="score">Score: 0</span>
       <span id="lives">Lives: 3</span>
-      <button id="muteButton">Mute</button>
+      <button id="muteButton" class="btn">Mute</button>
     </div>
-    <canvas id="gameCanvas" width="400" height="600"></canvas>
-    <div id="gameOver">
+    <canvas id="gameCanvas" width="400" height="600" aria-label="Game Area"></canvas>
+    <div id="gameOver" class="hidden">
       <h2>Game Over</h2>
       <p>Your Score: <span id="finalScore">0</span></p>
-      <button id="restartBtn">Restart</button>
+      <button id="restartBtn" class="btn">Restart</button>
     </div>
   </div>
 
-  <div id="gameControls" style="display: none;">
-    <button id="pauseButton">Pause</button>
-    <button id="leaderboardButton">Leaderboard</button>
+  <!-- Game Controls -->
+  <div id="gameControls" class="screen hidden">
+    <button id="pauseButton" class="btn">Pause</button>
+    <button id="leaderboardButton" class="btn">Leaderboard</button>
   </div>
 
-  <div id="leaderboard" style="display:none;">
+  <!-- Leaderboard -->
+  <div id="leaderboard" class="screen hidden">
     <h2>Leaderboard</h2>
     <ul id="leaderboardList">
       <li>Player1 - 1000</li>
       <li>Player2 - 900</li>
       <li>Player3 - 800</li>
     </ul>
-    <button id="closeLeaderboard">Close</button>
+    <button id="closeLeaderboard" class="btn">Close</button>
   </div>
 
+  <!-- Footer -->
   <footer>
     <p>Created by Zakir Aziz. &copy; 2024</p>
   </footer>
-      
-  </script>
-  <script src="app.js"></script>
+
+  <!-- Scripts -->
+  <script src="app.js" defer></script>
 </body>
 </html>
