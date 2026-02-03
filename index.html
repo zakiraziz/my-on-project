@@ -3,25 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Real-Time Weather Dashboard</title>
+  <meta name="description" content="Car Racing Game - A thrilling adventure on the race track.">
+  <title>Car Racing Game</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Real-Time Weather Dashboard</h1>
-    </header>
-    <main>
-      <div class="search-bar">
-        <input type="text" id="cityInput" placeholder="Enter city name" />
-        <button id="searchButton">Search</button>
-      </div>
-      <div id="weatherDisplay" class="weather-display">
-        <!-- Weather info will be displayed here -->
-      </div>
-    </main>
+  <!-- Welcome Screen -->
+  <div id="welcomeScreen" class="screen">
+    <h1>Welcome to the Car Racing Game!</h1>
+    <p>Get ready for an exciting adventure.</p>
+    <button id="startGameButton" class="btn">Start Game</button>
+    <p><a href="#instructions" class="btn">View Instructions</a></p>
   </div>
-  <script src="app.js"></script>
-  <python src="app.py"></python>
+
+  <!-- Instructions -->
+  <div id="instructions" class="screen hidden">
+    <h2>How to Play</h2>
+    <ul>
+      <li>Use the arrow keys to steer your car.</li>
+      <li>Avoid obstacles and collect power-ups.</li>
+      <li>Earn points by racing as long as possible without crashing.</li>
+    </ul>
+    <button id="backToWelcome" class="btn">Back</button>
+  </div>
+
+  <!-- Game Header -->
+  <header id="gameHeader" class="screen hidden">
+    <h1>Car Racing Game</h1>
+  </header>
+
+  <!-- Preloader -->
+  <div id="preloader" class="screen hidden">
+    <p>Loading...</p>
+  </div>
+
+  <!-- Game Container -->
+  <div id="gameContainer" class="screen hidden">
+    <div id="gameInfo">
+      <span id="score">Score: 0</span>
+      <span id="lives">Lives: 3</span>
+      <button id="muteButton" class="btn" aria-label="Mute/Unmute Audio">Mute</button>
+    </div>
+    <canvas id="gameCanvas" width="400" height="600" aria-label="Game Area"></canvas>
+    <div id="gameOver" class="hidden">
+      <h2>Game Over</h2>
+      <p>Your Score: <span id="finalScore">0</span></p>
+      <button id="restartBtn" class="btn">Restart</button>
+      <button id="backToWelcomeFromGameOver" class="btn">Back to Welcome</button>
+    </div>
+  </div>
+
+  <!-- Game Controls -->
+  <div id="gameControls" class="screen hidden">
+    <button id="pauseButton" class="btn" aria-label="Pause Game">Pause</button>
+    <button id="leaderboardButton" class="btn">Leaderboard</button>
+    <button id="settingsButton" class="btn">Settings</button>
+  </div>
+
+  <!-- Leaderboard -->
+  <div id="leaderboard" class="screen hidden">
+    <h2>Leaderboard</h2>
+    <ul id="leaderboardList">
+      <li>Player1 - 1000</li>
+      <li>Player2 - 900</li>
+      <li>Player3 - 800</li>
+    </ul>
+    <button id="closeLeaderboard" class="btn">Close</button>
+  </div>
+
+  <!-- Settings -->
+  <div id="settings" class="screen hidden">
+    <h2>Settings</h2>
+    <label for="volumeControl">Volume:</label>
+    <input type="range" id="volumeControl" min="0" max="100" value="50">
+    <br>
+    <label for="difficultySelect">Difficulty:</label>
+    <select id="difficultySelect">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+    <button id="closeSettings" class="btn">Close</button>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Created by Zakir Aziz. &copy; 2024</p>
+    <p>
+      <a href="#credits" class="btn">Credits</a>
+    </p>
+  </footer>
+
+  <!-- Credits -->
+  <div id="credits" class="screen hidden">
+    <h2>Credits</h2>
+    <p>Developer: Zakir Aziz</p>
+    <p>Graphics: Open Assets</p>
+    <p>Music: Free Music Archive</p>
+    <button id="backToWelcomeFromCredits" class="btn">Back to Welcome</button>
+  </div>
+
+  <!-- Scripts -->
+  <script src="app.js" defer></script>
 </body>
 </html>

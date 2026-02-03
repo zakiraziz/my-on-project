@@ -1,55 +1,204 @@
+/* General body styling */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Roboto', Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(to bottom, #87CEEB, #ffffff);
-  }
-  
-  .container {
-    max-width: 600px;
-    margin: 50px auto;
+    background: linear-gradient(120deg, #1e1e1e, #2a2a2a);
+    background-size: 300% 300%;
+    animation: gradientShift 10s infinite;
+    color: #f4f4f4;
     text-align: center;
+    overflow-x: hidden;
   }
   
-  header h1 {
-    color: #333;
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
   
-  .search-bar {
-    margin: 20px 0;
+  /* Game container styling */
+  #gameContainer {
+    border: 4px solid #444;
+    width: 400px;
+    height: 600px;
+    position: relative;
+    margin: 50px auto;
+    background: linear-gradient(180deg, #e8e8e8, #d3d3d3);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+    animation: popIn 0.8s ease-out;
   }
   
-  input {
-    width: 70%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
+  @keyframes popIn {
+    0% {
+      transform: scale(0.8);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
   }
   
-  button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: white;
+  /* Animated road background */
+  #background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url('road-background.jpg') repeat-y center;
+    background-size: cover;
+    animation: scrollBackground 3s linear infinite;
+  }
+  
+  @keyframes scrollBackground {
+    0% { background-position-y: 0; }
+    100% { background-position-y: 100%; }
+  }
+  
+  /* Overlay displays */
+  #score, #lives {
+    position: absolute;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+  }
+  
+  #score {
+    top: 10px;
+    left: 20px;
+    color: #222;
+  }
+  
+  #lives {
+    top: 10px;
+    right: 20px;
+    color: #222;
+  }
+  
+  /* Instructions section */
+  #instructions {
+    position: absolute;
+    bottom: 20px;
+    width: 90%;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Buttons and selectors */
+  button, select {
+    background-color: #333;
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    padding: 12px 20px;
+    margin: 10px;
+    border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
   }
   
-  button:hover {
-    background-color: #0056b3;
+  button:hover, select:hover {
+    background-color: #555;
+    transform: scale(1.1);
   }
   
-  .weather-display {
+  button:active {
+    transform: scale(0.95);
+  }
+  
+  /* Checkbox and labels */
+  input[type="checkbox"] {
+    transform: scale(1.2);
+    margin: 0 5px;
+  }
+  
+  label {
+    font-size: 14px;
+    color: #fff;
+  }
+  
+  /* Game Over screen */
+  #gameOver {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.85);
+    padding: 30px;
+    text-align: center;
+    color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+    font-size: 18px;
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translate(-50%, -40%);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  }
+  
+  /* Leaderboard styling */
+  #leaderboard {
     margin-top: 20px;
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    font-size: 18px;
+    text-align: center;
+    color: #ddd;
   }
   
-  .weather-display p {
+  #leaderboardList li {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
     margin: 5px 0;
+    border-radius: 5px;
+    transition: transform 0.3s ease, background-color 0.3s ease;
   }
   
+  #leaderboardList li:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+  }
+  
+  /* Footer styling */
+  footer {
+    text-align: center;
+    padding: 10px 0;
+    background: #1e1e1e;
+    color: #bbb;
+    font-size: 12px;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 480px) {
+    #gameContainer {
+      width: 90%;
+      height: 500px;
+    }
+  
+    #instructions {
+      font-size: 12px;
+    }
+  
+    button, select {
+      font-size: 14px;
+      padding: 8px 12px;
+    }
+  
+    #score, #lives {
+      font-size: 16px;
+    }
+  }
